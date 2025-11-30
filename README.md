@@ -1,121 +1,114 @@
-# Secure Storage Architecture on AWS
+# Cloud Security Architecture for Financial Services on AWS
 
-This repository documents a secure, resilient, and compliance-aligned **Storage and Data Protection Architecture** for financial workloads running on AWS.  
-The design focuses on protecting log data, transactional records, audit trails, and long-term archival data with strong encryption, immutability, redundancy, and automated recovery strategies.
+Project Duration: Sep 2025 – Oct 2025
 
-This project represents the **Storage Layer** portion of a larger cloud security architecture.
+Team Project: 3 members
 
-## 1. Overview
-
-Financial data requires strict guarantees of confidentiality, integrity, availability, and long-term auditability.  
-This storage architecture provides:
-
-- End-to-end encryption at rest and in transit  
-- Multi-AZ and multi-region resilience  
-- Immutability for audit logs  
-- Automated backup and recovery  
-- Lifecycle and compliance retention enforcement  
-- Service selection based on data category and workload requirements  
-
-Core AWS services include **Amazon S3, DynamoDB, RDS, and S3 Glacier**.
+This repository documents a complete cloud security architecture designed for financial services workloads operating on AWS.  
+It integrates identity governance, network protection, and data security to achieve confidentiality, integrity, and availability in compliance with standards such as PCI DSS, GDPR, and APRA CPS 234.
+<img width="768" height="432" alt="image" src="https://github.com/user-attachments/assets/4e078179-1a0c-4a93-a60e-953915c62acb" />
 
 
-## 2. Architecture Summary
-
-The following diagram summarizes the data categories, AWS services, key security measures, and redundancy strategies:
-
-<img width="1440" height="480" alt="image" src="https://github.com/user-attachments/assets/9979c919-2853-4f2a-91e4-f083df38489e" />
-
-## 3. Architecture Components
-
-### 3.1 Logs and Audit Records – Amazon S3
-
-**Security Controls**
-- Versioning  
-- Object Lock (WORM)  
-- SSE-KMS server-side encryption  
-- Restricted bucket policies  
-- VPC Endpoint access  
-- Lifecycle transitions to S3-IA, expiration of old versions  
-
-**Resilience**
-- Cross-Region Replication (CRR)  
-- Immutable audit record storage  
+I was primarily responsible for the Storage & Data Protection component of the architecture.
 
 
-### 3.2 High-Concurrency Events – Amazon DynamoDB
+## 1. Project Overview
 
-**Security Controls**
-- SSE-KMS encryption  
-- VPC Endpoint restriction  
-- Fine-grained IAM access policies  
-- DynamoDB Streams for log forwarding  
+This framework provides a resilient, auditable, and secure cloud environment.  
+It outlines controls that apply across the data lifecycle, including:
 
-**Resilience**
-- Point-in-Time Recovery (PITR) up to 35 days  
-- On-demand scaling for high activity workloads  
+- Identity verification and access control
+- Network segmentation and threat prevention
+- Secure data storage, retention, and long-term archival
+- Compliance alignment and security governance
 
-
-### 3.3 Transaction Data – Amazon RDS
-
-**Security Controls**
-- SSE-KMS encryption  
-- TLS in-transit encryption  
-- Secrets Manager for automatic credential rotation  
-- Automated backups and retention policies  
-
-**Resilience**
-- Multi-AZ deployment with synchronous replication  
-- Snapshot-based recovery for DR  
+The design follows AWS Well-Architected best practices and applies multi-layered security to protect financial data.
 
 
-### 3.4 Long-Term Archives – Amazon S3 Glacier
+## 2. Architecture Layers
 
-**Security Controls**
-- Vault Lock (immutability)  
-- Compliance retention enforcement  
-- SSE-KMS encryption  
+### Identity & Access Layer
+Controls who can access resources.  
+Includes IAM policies, MFA, role-based access, CloudTrail auditing, GuardDuty, and Security Hub integration.
 
-**Resilience**
-- Multi-region replication options  
-- Long-term archival storage (7–10+ years)  
+### Network & Perimeter Layer
+Controls how traffic flows and how attacks are mitigated.  
+Includes VPC multi-AZ design, private/public subnet separation, NAT gateways, NACL and security group hardening, WAF, Shield, and VPC endpoints.
+
+### Storage & Data Layer (My Component)
+Secures what data is stored and how it is retained.  
+Includes S3, RDS, DynamoDB, and Glacier with encryption, lifecycle automation, recovery, and immutability controls.
+
+## 3. My Contribution: Storage & Data Protection
+
+I designed and implemented the full Storage & Data Protection architecture, including:
+
+### S3 Log Archive Storage
+- KMS CMK encryption
+- Versioning and Object Lock (WORM)
+- S3 Lifecycle policy to S3-IA and Glacier
+- Cross-Region Replication for resilience
+
+### RDS Transaction Data Storage
+- Multi-AZ deployment
+- KMS encryption for storage and snapshots
+- Automated backups and point-in-time recovery
+- Secrets Manager for credential rotation
+
+### DynamoDB High-Concurrency Events
+- Point-in-Time Recovery (PITR)
+- Auto-scaling RCUs and WCUs
+- SSE-KMS encryption
+- VPC endpoints for private access
+
+### Glacier Archival Storage
+- Vault Lock for immutability
+- Long-term data retention (7–10 years)
+- Compliance-aligned WORM policies
+
+Detailed documentation is available in `docs/Storage-Data-Protection.md`.
 
 
-## 4. Data Governance and Compliance Mapping
+## 4. Cloud Security Lifecycle
 
-This storage design supports major financial security requirements:
+This architecture applies security controls across the full data lifecycle:
 
-- Immutable audit logs  
-- Multi-year regulatory retention  
-- Data confidentiality through encryption  
-- Integrity protection with Object Lock  
-- Rapid recovery for time-critical systems  
-- Geographic redundancy for operational resilience  
+| Phase | Security Measures |
+|-------|-------------------|
+| Creation | IAM least privilege, MFA, CMK encryption |
+| Use | Private access, VPC endpoint restrictions, continuous monitoring |
+| Storage | Multi-AZ redundancy, snapshots, versioning, PITR |
+| Disposal | Automated lifecycle deletion and archival policies |
 
 
-## 5. My Contribution
+## 5. Compliance Mapping
 
-This repository reflects the portion of the cloud security architecture that I designed:  
-**the Storage and Data Protection Layer**.
+The architecture addresses requirements from:
 
-My responsibilities included:
+- PCI DSS (auditing, encryption, access control)
+- GDPR (data lifecycle management and minimization)
+- APRA CPS 234 (resilience and traceability)
+- AWS Well-Architected Framework (Security and Reliability Pillars)
 
-- Data classification and service selection  
-- Security controls for S3, RDS, DynamoDB, Glacier  
-- KMS encryption architecture (SSE-KMS)  
-- IAM, bucket policies, and VPC endpoint access design  
-- PITR, backups, snapshots, archival lifecycle design  
-- Compliance-oriented retention and immutability policies  
-- Disaster recovery and cross-region replication planning  
+Compliance details are maintained in `docs/Compliance-Mapping.md`.
 
-## 6. Technologies
+## 6. Technologies and Services
 
-- Amazon S3  
-- Amazon S3 Glacier  
+- Amazon S3, S3-IA, Glacier  
+- Amazon RDS (MySQL/Postgres, Multi-AZ)  
 - Amazon DynamoDB  
-- Amazon RDS  
+- IAM, Security Hub, GuardDuty  
 - AWS KMS  
-- IAM  
-- VPC Endpoints  
-- Backup and recovery services  
+- CloudWatch, CloudTrail  
+- VPC, WAF, Shield, NAT Gateways, Route 53  
+- Secrets Manager  
+
+## 7. Documentation PDF
+
+The complete project report is available in the `pdf/` directory.
+
+
+## 8. License
+
+This project is released for academic and professional demonstration purposes.
 
